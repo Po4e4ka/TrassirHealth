@@ -1,4 +1,4 @@
 from TrObject import *
 
-devices = TrObject.loadFromServer()
+devices = TrObject.loadFromTrassir()
 TrObject.saveToFile(devices[0])
