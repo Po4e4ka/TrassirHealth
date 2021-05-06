@@ -13,7 +13,7 @@ class TrObject():
         self.info = info
 
     @staticmethod
-    def loadFromTrassir():
+    def loadFromTrassir(SERVER_IP):
         """
         Функция ожидает получения информации с сервера трассир, лочится на sock.listen
         После запуска скрипта на сервере, функция составляет список серверов
@@ -21,7 +21,7 @@ class TrObject():
         """
         print("Старт ожидания информации с сервера")
         sock = socket.socket()
-        sock.connect(("office.icstech.ru",6969))
+        sock.connect((SERVER_IP,6969))
         print('Соеднинение с сервером:', "office.icstech.ru")
         result = b''
         while True:

@@ -5,7 +5,7 @@ from TrObject import *
 # в переменной хранится кортеж (a, b),
 # где а - выгрузка с трассира в джсон формате,
 # b - список серверов в формате TrObject
-devices = TrObject.loadFromTrassir()
+devices = TrObject.loadFromTrassir(SERVER_IP="office.icstech.ru")
 # -------------------------------------------------------------
 # Сохранение выгрузки в файл (на всякий случай)
 # TODO Сделать несколько файлов (имторию выгрузки)
