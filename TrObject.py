@@ -21,25 +21,20 @@ class TrObject():
         """
         print("Старт ожидания информации с сервера")
         sock = socket.socket()
-        sock.bind(('', 8000))
-        sock.listen(1)
-
-        # try:
-        conn, addr = sock.accept()
-        print('Внешнее подключение:', addr)
+        sock.connect(("office.icstech.ru",6969))
+        print('Соеднинение с сервером:', "office.icstech.ru")
         result = b''
         while True:
-            data = conn.recv(4096)
+            data = sock.recv(4096)
             if not data:
                 break
             result += data
-        conn.close()
+        sock.close()
         result = json.loads(result)
         servList = TrObject.dictToClasses(result)
         result["scanDateTime"] = str(datetime.datetime.now())
         return result, servList
-        # except Exception as e:
-        #     return "Ошибка получения информации с сервера\n"+str(e)
+
     @staticmethod
     def dictToClasses(result):
         serverList = []
@@ -50,19 +45,7 @@ class TrObject():
                 tempS.addDevice(tempD)
             serverList.append(tempS)
         return serverList
-    # @staticmethod
-    # def getDevices(self, online=None):
-    #     """
-    #     Выводит все устройства по названию сервера
-    #     :return:
-    #     """
-    #     if online is None:
-    #         return self.__devices
-    #     elif online == 0:
-    #         return
-    #
-    #     elif online == 1:
-    #         return
+
     @staticmethod
     def saveToFile(devices):
         """
