@@ -17,6 +17,6 @@ for server in devices:
     off = server.offlineDevice("name", "ip") # Получение неактивных устройств
     if off is not None: # Если есть неактивные устройства
         botMessage = server.name + '\n' + ''.join(off)
-        # botMessage+= '\n------------------------\n' # Для красоты в коммандной строке
+        botMessage+= '\n------------------------\n' # Для красоты в коммандной строке
         print(botMessage)
 
