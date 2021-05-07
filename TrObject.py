@@ -21,7 +21,7 @@ class TrObject():
         """
         print("Старт ожидания информации с сервера")
         sock = socket.socket()
-        sock.connect((SERVER_IP,6969))
+        sock.connect((SERVER_IP ,6969))
         print('Соеднинение с сервером:', "office.icstech.ru")
         result = b''
         while True:
@@ -31,7 +31,7 @@ class TrObject():
             result += data
         sock.close()
         result = json.loads(result)
-        serverList = TrObject.dictToClasses(result)
+        serverList = TrObject.dictToClasses(result["ipDevices"])
         result["scanDateTime"] = str(datetime.datetime.now())
         return result, serverList
 
@@ -44,16 +44,26 @@ class TrObject():
         :return:
         """
         serverList = []
+        # for servName, devices in list(result.items()):
+        #     tempS = TrServer(servName, devices)
+        #     for device, devInfo in devices.items():
+        #         tempD = TrDevice(device, devInfo)
+        #         tempS.addDevice(tempD)
+        #         del tempD
+        #     serverList.append(tempS)
+        #     del tempS
+        # return serverList
+
         for servName, devices in list(result.items()):
             tempS = TrServer(servName, devices)
-            for device, devInfo in devices.items():
-                tempD = TrDevice(device, devInfo)
+            for device in devices:
+                print(device)
+                tempD = TrDevice(device["name"], device)
                 tempS.addDevice(tempD)
                 del tempD
             serverList.append(tempS)
             del tempS
         return serverList
-
     @staticmethod
     def saveToFile(devices):
         """
@@ -103,7 +113,6 @@ class TrDevice(TrObject):
     def __init__(self, name: str, info: dict or None):
         super().__init__(name, None)
         self.info = info
-        self.name = info["name"]
         self.status = info["status"]
         self.ip = info["ip"]
         self.port = info["port"]

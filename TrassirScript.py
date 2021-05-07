@@ -75,6 +75,14 @@
 # 	return servInfo
 #
 #
+# def getChannelData(servName=None):
+# 	channelInfo = {}
+# 	setts = host.settings("/{}/channels".format(servName)).ls() if servName is not None else host.settings("channels").ls()
+# 	for sett in setts:
+# 		channelInfo["name"] = sett["name"].decode("utf-8")
+# 		channelInfo["status"] = host.settings(sett.cd("info")["grabber_path"])["grabber_enabled"] if sett.cd("info") is not None else "0"
+# 		yield channelInfo
+#
 #
 #
 #
@@ -84,18 +92,19 @@
 # 	sock.bind(('', 6969))
 # 	sock.listen(1)
 # 	conn, addr = sock.accept()
-# 	data = {}
+# 	data = {"channels":{}, "ipDevices":{}}
 # 	for server in objects_list("Server"):
 # 		if server[0] != '':
-# 			data[server[0]] = getServerInfo(server[0])
+# 			data["ipDevices"][server[0]] = [dev.copy() for dev in getDeviceData(server[0])]
+# 			data["channels"][server[0]] = [ch.copy() for ch in getChannelData(server[0])]
 # 	try:
 # 		conn.send(json.dumps(data, indent=4))
 # 	except:
 # 		sock.close()
-# 		timeout(1000 * DELAY, start)
+# 		timeout(10, start)
 # 	sock.close()
 # 	host.stats()["run_count"] += 1
-# 	timeout(1000 * DELAY, start)
+# 	timeout(10, start)
 #
 #
 # start()
