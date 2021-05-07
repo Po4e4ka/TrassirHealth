@@ -2,6 +2,8 @@ import datetime
 import socket
 import json
 
+import openpyxl as openpyxl
+
 
 class TrObject():
     """
@@ -57,7 +59,6 @@ class TrObject():
         for servName, devices in list(result.items()):
             tempS = TrServer(servName, devices)
             for device in devices:
-                print(device)
                 tempD = TrDevice(device["name"], device)
                 tempS.addDevice(tempD)
                 del tempD
@@ -79,6 +80,50 @@ class TrObject():
         """
         with open(path, "r") as f:
             devices = json.load(f)
+
+    @staticmethod
+    def modelInfo(info, toExcel=False):
+        data = {}
+        if toExcel:
+            for server, devices in info.items():
+                data[server] = {}
+                for device in devices:
+                    if device["model"] in data[server]:
+                        data[server][device["model"]] += 1
+                    else:
+                        data[server][device["model"]] = 1
+            counter = -1
+            wb = openpyxl.Workbook()
+            ws = wb.active
+            ws.column_dimensions['A'].width = 3
+            ws.column_dimensions['B'].width = 17
+            ws.column_dimensions['C'].width = 13
+            try:
+                for servName, servDevices in data.items():
+                    counter += 2
+                    ws.merge_cells(f"A{counter}:C{counter}")
+                    ws[f'A{counter}'] = servName
+                    ws[f'A{counter}'].fill = openpyxl.styles.PatternFill(start_color="FFC7CE", end_color="FFC7CE",
+                                                                         fill_type="solid")
+                    counter += 1
+                    ws[f'A{counter}'] = "№"
+                    ws[f'B{counter}'] = "Наименование"
+                    ws[f'C{counter}'] = "Кол-во (шт.)"
+                    i = 0
+                    for deviceName, deviceCount in servDevices.items():
+                        counter += 1
+                        i += 1
+                        ws[f'A{counter}'] = str(i) + "."
+                        ws[f'B{counter}'] = deviceName
+                        ws[f'C{counter}'] = deviceCount
+            except:
+                input("Неудачное преобразование. Файл не соответствует запросу\nEnter для выхода...")
+                exit()
+            try:
+                wb.save("DevicesInfo.xlsx")
+                # TODO Внести эту таблицу в письмо боту
+            except:
+                input("Ошибка сохранения. Возможно таблица открыта. Повторите попытку\nEnter для выхода...")
 
 
 class TrServer(TrObject):
