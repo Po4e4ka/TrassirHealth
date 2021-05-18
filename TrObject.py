@@ -4,6 +4,22 @@ import json
 
 import openpyxl as openpyxl
 
+'''
+1025 - HDD отсутствует (камера)
+2049 - HDD OK (регистратор)
+1041 - неправильная модель
+1537 - HDD отсутствует (регистратор)
+1028 - Not connected
+0 - нет соединения
+4 - connection lost: can't connect
+8193 - HDD не отформатирован
+513 - ошибка HDD
+2065 - неправильная модель
+'''
+
+
+
+
 
 class TrObject():
     """
@@ -121,7 +137,6 @@ class TrObject():
                 exit()
             try:
                 wb.save("DevicesInfo.xlsx")
-                # TODO Внести эту таблицу в письмо боту
             except:
                 input("Ошибка сохранения. Возможно таблица открыта. Повторите попытку\nEnter для выхода...")
 
@@ -145,7 +160,7 @@ class TrServer(TrObject):
         """
         result = []
         for device in self.__devices:
-            if device.status == 0:
+            if device.status in [1028, 0, 4]:
                 if args == None:
                     result.append(device)
                 else:
@@ -158,8 +173,8 @@ class TrDevice(TrObject):
     def __init__(self, name: str, info: dict or None):
         super().__init__(name, None)
         self.info = info
-        self.status = info["status"]
-        self.ip = info["ip"]
+        self.status = info["status"] # Int
+        self.ip = info["ip"] # string
         self.port = info["port"]
         self.model = info["model"]
 
